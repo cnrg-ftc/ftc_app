@@ -49,6 +49,8 @@ public class HardwarePushbot
     public Servo leftClaw = null;
     public Servo rightClaw = null;
 
+    public Servo mascot = null;
+
     // Servo Positions
     public static final double mid_pos = 0.5;
     public static final double left_pos = 0;
@@ -82,6 +84,8 @@ public class HardwarePushbot
         leftClaw = hwMap.get(Servo.class, "leftClaw");
         rightClaw = hwMap.get(Servo.class, "rightClaw");
 
+        mascot = hwMap.get(Servo.class, "mascot");
+
         // Set Motor Directions
         rightForward.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
@@ -102,6 +106,8 @@ public class HardwarePushbot
         arm.setPower(0);
         balls.setPower(0);
 
+        mascot.setPosition(0);
+
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         rightForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -116,6 +122,8 @@ public class HardwarePushbot
         // Initialize Servos
         leftClaw.setPosition(mid_pos);
         rightClaw.setPosition(mid_pos);
+
+        mascot.setPosition(mid_pos);
     }
 
     public void setLeft(double speed){
