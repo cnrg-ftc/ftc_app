@@ -90,6 +90,10 @@ public class NieR extends LinearOpMode {
             moveArm(-11/2, -0.4);
             moveRobot(0.2, 0.2);
             moveArm(4, 0.4);
+
+            bot.mascot.setPosition(0);
+
+            moveGoldMineral(GoldMineralPos);
         }
 
         if (tfod != null) {
@@ -131,6 +135,68 @@ public class NieR extends LinearOpMode {
         bot.rightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bot.setLeft(0);
         bot.setRight(0);
+    }
+
+    private void rotateRobot(double rotations, double speed)
+    {
+        bot.leftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bot.rightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bot.setLeft(0);
+        bot.setRight(0);
+
+        bot.leftForward.setTargetPosition((int)(-1120 * rotations));
+        bot.rightForward.setTargetPosition((int)(1120 * rotations));
+
+        bot.leftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        bot.rightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        bot.setLeft(-speed);
+        bot.setRight(speed);
+        while (bot.leftForward.isBusy() && !isStopRequested()) {
+            idle();
+        }
+        bot.leftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bot.rightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bot.setLeft(0);
+        bot.setRight(0);
+    }
+
+    private void moveGoldMineral(int mineralPosition)
+    {
+        // Rotate
+        if(mineralPosition == 0) // Left
+        {
+            rotateRobot(1.25d, 0.2d);
+        }
+        else if(mineralPosition == 2) // Right
+        {
+            rotateRobot(-1.25d, -0.2d);
+        }
+
+        // Move Forward
+        if (mineralPosition == 0) {
+            moveRobot(0.05d, 0.2d);
+        }
+        else{
+            moveRobot(0.5, 0.2d);
+        }
+
+        // Move the cube
+        if(mineralPosition == 0) // Left
+        {
+            rotateRobot(0.41d, 0.2d);
+            rotateRobot(-0.41d, -0.2d);
+        }
+        else if(mineralPosition == 1) // Middle
+        {
+            rotateRobot(0.41d, 0.2d);
+            rotateRobot(-0.41d, -0.2d);
+        }
+        else if(mineralPosition == 2) // Right
+        {
+            rotateRobot(0.41d, 0.2d);
+            rotateRobot(-0.41d, -0.2d);
+        }
     }
 
     private void initVuforia() {
