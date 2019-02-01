@@ -38,6 +38,8 @@ public class Ares_Duo extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private HardwarePushbot Bot = new HardwarePushbot();
 
+    private double speedMultiplier = 1;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -93,6 +95,14 @@ public class Ares_Duo extends OpMode {
         }
         if (gamepad2.b) {
             Bot.setClaw(Bot.right_pos);
+        }
+
+        // Precision Mode
+        if (gamepad1.a){
+            if (speedMultiplier == 0.3)
+                speedMultiplier = 1;
+            else
+                speedMultiplier = 0.3;
         }
 
         // Show the elapsed game time.

@@ -55,17 +55,25 @@ public class NieR extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                         telemetry.addData("# Object Detected", updatedRecognitions.size());
-                        if (updatedRecognitions.size() == 3) {
+                        if (updatedRecognitions.size() < 4) {
+                            Recognition goldMineral = null;
+                            Recognition silverMineral1 = null;
+                            Recognition silverMineral2 = null;
+
                             int goldMineralX = -1;
                             int silverMineral1X = -1;
                             int silverMineral2X = -1;
+
                             for (Recognition recognition : updatedRecognitions) {
                                 if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                     goldMineralX = (int) recognition.getLeft();
+                                    goldMineral = recognition;
                                 } else if (silverMineral1X == -1) {
                                     silverMineral1X = (int) recognition.getLeft();
+                                    silverMineral1 = recognition;
                                 } else {
                                     silverMineral2X = (int) recognition.getLeft();
+                                    silverMineral2 = recognition;
                                 }
                             }
                             if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
@@ -81,19 +89,74 @@ public class NieR extends LinearOpMode {
                                     telemetry.addData("Gold Mineral Position", "Center");
                                 }
                             }
+                            else if (goldMineralX != -1){
+                                Gotcha = true;
+
+                                int Third = goldMineral.getImageWidth() / 3;
+
+                                if (goldMineralX <= Third) {
+                                    GoldMineralPos = 0;
+                                    telemetry.addData("Gold Mineral Position", "Left");
+                                }
+                                else if (goldMineralX > Third && goldMineralX <= 2*Third){
+                                    GoldMineralPos = 1;
+                                    telemetry.addData("Gold Mineral Position", "Center");
+                                }
+                                else{
+                                    GoldMineralPos = 2;
+                                    telemetry.addData("Gold Mineral Position", "Right");
+                                }
+                            }
+                            else if (silverMineral1X !=-1 && silverMineral2X != -1){
+                                Gotcha = true;
+
+                                int Third = silverMineral1.getImageWidth() / 3;
+
+                                if (silverMineral1X <= Third){
+                                    if (silverMineral2X <= 2*Third){
+                                        GoldMineralPos = 2;
+                                        telemetry.addData("Gold Mineral Position", "Right");
+                                    }
+                                    else{
+                                        GoldMineralPos = 1;
+                                        telemetry.addData("Gold Mineral Position", "Center");
+                                    }
+                                }
+                                else if (silverMineral1X <= 2*Third){
+                                    if (silverMineral2X <= Third){
+                                        GoldMineralPos = 2;
+                                        telemetry.addData("Gold Mineral Position", "Right");
+                                    }
+                                    else{
+                                        GoldMineralPos = 0;
+                                        telemetry.addData("Gold Mineral Position", "Left");
+                                    }
+                                }
+                                else{
+                                    if (silverMineral2X <= Third){
+                                        GoldMineralPos = 1;
+                                        telemetry.addData("Gold Mineral Position", "Center");
+                                    }
+                                    else{
+                                        GoldMineralPos = 0;
+                                        telemetry.addData("Gold Mineral Position", "Left");
+                                    }
+                                }
+                            }
                         }
                         telemetry.update();
                     }
                 }
             }
 
-            moveArm(-11/2, -0.4);
-            moveRobot(0.2, 0.2);
+            /*moveArm(-11/2, -0.4);
+            moveRobot(0.1, 0.2);
             moveArm(4, 0.4);
 
             bot.mascot.setPosition(0);
 
-            moveGoldMineral(GoldMineralPos);
+            moveGoldMineral(GoldMineralPos);*/
+
         }
 
         if (tfod != null) {
@@ -163,40 +226,6 @@ public class NieR extends LinearOpMode {
 
     private void moveGoldMineral(int mineralPosition)
     {
-        // Rotate
-        if(mineralPosition == 0) // Left
-        {
-            rotateRobot(1.25d, 0.2d);
-        }
-        else if(mineralPosition == 2) // Right
-        {
-            rotateRobot(-1.25d, -0.2d);
-        }
-
-        // Move Forward
-        if (mineralPosition == 0) {
-            moveRobot(0.05d, 0.2d);
-        }
-        else{
-            moveRobot(0.5, 0.2d);
-        }
-
-        // Move the cube
-        if(mineralPosition == 0) // Left
-        {
-            rotateRobot(0.41d, 0.2d);
-            rotateRobot(-0.41d, -0.2d);
-        }
-        else if(mineralPosition == 1) // Middle
-        {
-            rotateRobot(0.41d, 0.2d);
-            rotateRobot(-0.41d, -0.2d);
-        }
-        else if(mineralPosition == 2) // Right
-        {
-            rotateRobot(0.41d, 0.2d);
-            rotateRobot(-0.41d, -0.2d);
-        }
     }
 
     private void initVuforia() {
